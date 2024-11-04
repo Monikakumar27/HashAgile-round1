@@ -1,0 +1,19 @@
+function rotateStringLeft(s: string, k: number): string 
+{
+  const n = s.length;
+  k = k % n; 
+  const rotated = new Array<string>(n);
+  for (let i = 0; i < k; i++) 
+  {
+    rotated[i] = s[n - k + i];
+  }
+  for (let i = k ; i < n ; i++) 
+  {
+    rotated[i] = s[i - k];
+  }
+  return rotated.join('');
+}
+const s = "abcdef";
+const k = 2;
+const rotatedString = rotateStringLeft(s, k);
+console.log(rotatedString);
