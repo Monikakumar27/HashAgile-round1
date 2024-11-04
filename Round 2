@@ -1,0 +1,30 @@
+import pymongo
+def create_collection(collection_name):
+    client = pymongo.MongoClient("mongodb://localhost:8989/")
+    db = client["Round2_database"]
+    collection = db[collection_name]
+    return collection
+def index_data(collection, exclude_column):
+    collection.create_index([(field, pymongo.ASCENDING) for field in collection.find_one().keys() if field != exclude_column])
+def search_by_column(collection, column_name, column_value):
+    results = collection.find({column_name: column_value})
+    for result in results:
+        print(result)
+def get_emp_count(collection):
+    count = collection.count_documents({})
+    print(f"Employee count: {count}")
+
+def del_emp_by_id(collection, employee_id):
+    result = collection.delete_one({"employee_id": employee_id})
+    if result.deleted_count > 0:
+        print(f"Employee with ID {employee_id} deleted successfully.")
+    else:
+        print(f"Employee with ID {employee_id} not found.")
+
+def get_dep_facet(collection):
+    pipeline = [
+        {"$group": {"_id": "$Department", "count": {"$sum": 1}}}
+    ]
+    results = collection.aggregate(pipeline)
+    for result in results:
+        print(f"Department: {result['_id']}, Count: {result['count']}")
